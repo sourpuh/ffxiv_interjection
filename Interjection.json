@@ -1,6 +1,6 @@
 {
     "Name": "Interjection",
-    "InternalName": "interjection",
+    "InternalName": "Interjection",
     "Author": "sourpuh",
     "Punchline": "Better interrupt and enmity tracking",
     "Description": "Show which casts are interruptible in the Enemy List. Color enmity gems when enemies are targeting other tanks.",
