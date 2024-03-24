@@ -3,7 +3,7 @@
     "InternalName": "interjection",
     "Author": "sourpuh",
     "Punchline": "Better interrupt and enmity tracking",
-    "Description": "Show which casts are interruptable in the Enemy List. Color emnity gems when enemies are targetting other tanks.",
+    "Description": "Show which casts are interruptible in the Enemy List. Color enmity gems when enemies are targeting other tanks.",
     "RepoUrl": "https://github.com/sourpuh/ffxiv_interjection",
     "ImageUrls": [ "https://raw.githubusercontent.com/sourpuh/ffxiv_interjection/master/images/image1.png" ]
 }

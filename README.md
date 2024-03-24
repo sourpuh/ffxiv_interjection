@@ -1,7 +1,7 @@
 # Interjection
 
 A Dalamud plugin for improving your tanking experience.
-Show which casts are interruptable in the Enemy List.
-Color emnity gems when enemies are targetting other tanks.
+Show which casts are interruptible in the Enemy List.
+Color enmity gems when enemies are targeting other tanks.
 
 ![Functionality Demonstration](https://raw.githubusercontent.com/sourpuh/ffxiv_interjection/master/images/image1.png)
