@@ -3,6 +3,7 @@ using System.Numerics;
 using Dalamud.Interface.Windowing;
 using System;
 using FFXIVClientStructs.FFXIV.Client.Graphics;
+using Dalamud.Interface.Utility.Raii;
 
 namespace Interjection;
 
@@ -15,13 +16,6 @@ public class ConfigWindow : Window
 
         Size = new Vector2(369, 225);
         SizeCondition = ImGuiCond.FirstUseEver;
-    }
-
-    private void DisableableBlock(bool enabled, Action fun)
-    {
-        if (!enabled) ImGui.BeginDisabled();
-        fun();
-        if (!enabled) ImGui.EndDisabled();
     }
 
     private void Tooltip(string tooltip)
@@ -54,32 +48,32 @@ public class ConfigWindow : Window
             _plugin.Config.SetToDefaults();
             needSave = true;
         }
-        DisableableBlock(_plugin.Config.Enabled, () =>
+        using (ImRaii.Disabled(!_plugin.Config.Enabled))
         {
-            DisableableBlock(_plugin.Config.OverrideNormalCastColor, () =>
+            using (ImRaii.Disabled(!_plugin.Config.OverrideNormalCastColor))
             {
                 needSave |= ByteColorEdit("##ucastcolor", ref _plugin.Config.NormalCastColor, ImGuiColorEditFlags.NoInputs);
                 ImGui.SameLine();
-            });
+            }
             needSave |= ImGui.Checkbox("Recolor Default Castbar", ref _plugin.Config.OverrideNormalCastColor);
             Tooltip("Change the enemy list castbar color.");
 
-            DisableableBlock(_plugin.Config.OverrideInterruptableCastColor, () =>
+            using (ImRaii.Disabled(!_plugin.Config.OverrideInterruptableCastColor))
             {
                 needSave |= ByteColorEdit("##icastcolor", ref _plugin.Config.InterruptableCastColor, ImGuiColorEditFlags.NoInputs);
                 ImGui.SameLine();
-            });
+            }
             needSave |= ImGui.Checkbox("Recolor Interruptable Castbar", ref _plugin.Config.OverrideInterruptableCastColor);
             Tooltip("Change the enemy list castbar color for interruptible spells.");
 
-            DisableableBlock(_plugin.Config.OverrideTankTargetEnmityGemColor, () =>
+            using (ImRaii.Disabled(!_plugin.Config.OverrideTankTargetEnmityGemColor))
             {
                 needSave |= ByteColorEdit("##tankgemcolor", ref _plugin.Config.TankGemColor, ImGuiColorEditFlags.NoInputs);
                 ImGui.SameLine();
-            });
+            }
             needSave |= ImGui.Checkbox("Recolor Enmity Gem for Tanks", ref _plugin.Config.OverrideTankTargetEnmityGemColor);
             Tooltip("Change the enmity gem color when the enemy is targetting a tank that is not you.");
-        });
+        }
 
         if (needSave)
         {
