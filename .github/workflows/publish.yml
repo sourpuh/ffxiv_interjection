@@ -42,7 +42,7 @@ jobs:
           plugin_id: 63
           internal_name: "Interjection"
           version_number: ${{ env.tag }}
-          path: "Interjection/bin/Release/Interjection/latest.zip"
+          path: "bin/Release/Interjection/latest.zip"
           type: "latest"
           dalamud_version: "11"
         env:
