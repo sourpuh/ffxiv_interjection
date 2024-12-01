@@ -33,7 +33,7 @@ jobs:
         run: dotnet restore
 
       - name: Build Project
-        run: dotnet build --configuration Release Interjection/Interjection.csproj -p:AssemblyVersion=${{ env.tag }}
+        run: dotnet build --configuration Release Interjection.csproj -p:AssemblyVersion=${{ env.tag }}
 
       - name: Publish Version
         uses: PunishXIV/dynamis-action@v1
