@@ -1,8 +1,8 @@
-﻿using FFXIVClientStructs.FFXIV.Client.Graphics;
+﻿using FFXIVClientStructs.FFXIV.Client.Game.Character;
+using FFXIVClientStructs.FFXIV.Client.Graphics;
 using FFXIVClientStructs.FFXIV.Client.UI;
 using FFXIVClientStructs.FFXIV.Component.GUI;
 using System;
-using static FFXIVClientStructs.FFXIV.Client.Game.Character.Character;
 
 namespace Interjection;
 
@@ -10,18 +10,24 @@ public unsafe class EnemyList : IDisposable
 {
     private static readonly ByteColor White = new ByteColor()
     {
-        R = 255, G = 255, B = 255, A = 255,
+        R = 255,
+        G = 255,
+        B = 255,
+        A = 255,
     };
     private static readonly ByteColor BrightMultiplier = new ByteColor()
     {
-        R = 200, G = 200, B = 200,
+        R = 200,
+        G = 200,
+        B = 200,
     };
     private static readonly ByteColor DefaultMultiplier = new ByteColor()
     {
-        R = 100, G = 100, B = 100,
+        R = 100,
+        G = 100,
+        B = 100,
     };
 
-    private Plugin _plugin;
     private EnemyButton[] _enemyButtons;
     public EnemyList()
     {
@@ -30,15 +36,14 @@ public unsafe class EnemyList : IDisposable
 
     public bool Built { get; private set; }
 
-    public void Initialize(Plugin plugin, AddonEnemyList* enemyList)
+    public void Initialize(AddonEnemyList* enemyList)
     {
         if (Built) return;
-        _plugin = plugin;
 
         for (byte i = 0; i < AddonEnemyList.MaxEnemyCount; i++)
         {
             var enemyComponent = *(&enemyList->EnemyOneComponent)[i];
-            _enemyButtons[i] = new(plugin, enemyComponent);
+            _enemyButtons[i] = new(enemyComponent);
         }
         Built = true;
     }
@@ -58,14 +63,15 @@ public unsafe class EnemyList : IDisposable
     {
         if (castinfo != null && castinfo->IsCasting > 0)
         {
-            if (_plugin.Config.OverrideInterruptableCastColor && castinfo->Interruptible > 0)
+            if (Plugin.Config.OverrideInterruptableCastColor && castinfo->Interruptible > 0)
             {
                 _enemyButtons[i].ColorCastBarInterruptable();
             }
-            else if (_plugin.Config.OverrideNormalCastColor)
+            else if (Plugin.Config.OverrideNormalCastColor)
             {
                 _enemyButtons[i].ColorCastBarNormal();
-            } else
+            }
+            else
             {
                 _enemyButtons[i].ResetCastBar();
             }
@@ -75,7 +81,7 @@ public unsafe class EnemyList : IDisposable
             _enemyButtons[i].ResetCastBar();
         }
 
-        if (_plugin.Config.OverrideTankTargetEnmityGemColor && isTargettingTank)
+        if (Plugin.Config.OverrideTankTargetEnmityGemColor && isTargettingTank)
         {
             _enemyButtons[i].ColorGemBlue();
         }
@@ -87,7 +93,7 @@ public unsafe class EnemyList : IDisposable
 
     public class EnemyButton : IDisposable
     {
-        private Plugin _plugin;
+        private Plugin Plugin;
         private CastState _castState;
         private readonly AtkResNode* _castbarBackground;
         private readonly AtkResNode* _castbarForeground;
@@ -102,9 +108,8 @@ public unsafe class EnemyList : IDisposable
             CastingUninterruptible,
         };
 
-        public EnemyButton(Plugin plugin, AtkComponentButton* enemyComponent)
+        public EnemyButton(AtkComponentButton* enemyComponent)
         {
-            _plugin = plugin;
             if (enemyComponent == null)
             {
                 throw new ArgumentNullException();
@@ -126,7 +131,7 @@ public unsafe class EnemyList : IDisposable
         {
             AtkImageNode* gemImage = (AtkImageNode*)_gem->ChildNode;
             gemImage->PartId = 3;
-            MultiplyColor(_gem, _plugin.Config.TankGemColor);
+            MultiplyColor(_gem, Plugin.Config.TankGemColor);
         }
 
         internal void ResetGem()
@@ -139,26 +144,26 @@ public unsafe class EnemyList : IDisposable
             _castState = CastState.CastingUninterruptible;
 
             MultiplyColor(_enemyButtonBackground, DefaultMultiplier);
-            _enemyButtonBackground->Color = _plugin.Config.NormalCastColor;
+            _enemyButtonBackground->Color = Plugin.Config.NormalCastColor;
 
             MultiplyColor(_castbarBackground, BrightMultiplier);
-            _castbarBackground->Color = _plugin.Config.NormalCastColor;
+            _castbarBackground->Color = Plugin.Config.NormalCastColor;
 
             MultiplyColor(_castbarForeground, BrightMultiplier);
-            _castbarForeground->Color = Max(DefaultMultiplier, _plugin.Config.NormalCastColor);
+            _castbarForeground->Color = Max(DefaultMultiplier, Plugin.Config.NormalCastColor);
         }
         internal void ColorCastBarInterruptable()
         {
             _castState = CastState.CastingInterruptible;
 
             MultiplyColor(_enemyButtonBackground, BrightMultiplier);
-            _enemyButtonBackground->Color = _plugin.Config.InterruptableCastColor;
+            _enemyButtonBackground->Color = Plugin.Config.InterruptableCastColor;
 
             MultiplyColor(_castbarBackground, BrightMultiplier);
-            _castbarBackground->Color = _plugin.Config.InterruptableCastColor;
+            _castbarBackground->Color = Plugin.Config.InterruptableCastColor;
 
             MultiplyColor(_castbarForeground, BrightMultiplier);
-            _castbarForeground->Color = Max(DefaultMultiplier, _plugin.Config.InterruptableCastColor);
+            _castbarForeground->Color = Max(DefaultMultiplier, Plugin.Config.InterruptableCastColor);
         }
 
         internal void ResetCastBar()

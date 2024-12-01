@@ -1,10 +1,10 @@
-﻿using System;
-using System.Linq;
-using Dalamud.Game.Addon.Lifecycle;
+﻿using Dalamud.Game.Addon.Lifecycle;
 using Dalamud.Game.Addon.Lifecycle.AddonArgTypes;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using FFXIVClientStructs.FFXIV.Client.System.Framework;
 using FFXIVClientStructs.FFXIV.Client.UI;
+using System;
+using System.Linq;
 
 namespace Interjection;
 
@@ -18,18 +18,16 @@ public unsafe class AddonEnemyListHooks : IDisposable
         /*DRK*/ 32,
         /*GNB*/ 37
     ];
-    private readonly Plugin _plugin;
     private readonly EnemyList _enemyList;
 
-    public AddonEnemyListHooks(Plugin p)
+    public AddonEnemyListHooks()
     {
-        _plugin = p;
-        _plugin.AddonLifecycle.RegisterListener(AddonEvent.PostDraw, "_EnemyList", AddonPostDraw);
+        Plugin.AddonLifecycle.RegisterListener(AddonEvent.PostDraw, "_EnemyList", AddonPostDraw);
         _enemyList = new();
     }
     public void Dispose()
     {
-        _plugin.AddonLifecycle.UnregisterListener(AddonPostDraw);
+        Plugin.AddonLifecycle.UnregisterListener(AddonPostDraw);
         _enemyList.Dispose();
     }
 
@@ -37,7 +35,7 @@ public unsafe class AddonEnemyListHooks : IDisposable
     {
         AddonEnemyList* thisPtr = (AddonEnemyList*)args.Addon;
 
-        if (thisPtr == null || !_plugin.Config.Enabled || _plugin.InPvp)
+        if (thisPtr == null || !Plugin.Config.Enabled)
         {
             _enemyList.Dispose();
             return;
@@ -45,10 +43,10 @@ public unsafe class AddonEnemyListHooks : IDisposable
 
         if (!_enemyList.Built)
         {
-            _enemyList.Initialize(_plugin, thisPtr);
+            _enemyList.Initialize(thisPtr);
         }
 
-        var numArrayHolder = Framework.Instance()->GetUiModule()->GetRaptureAtkModule()->AtkModule.AtkArrayDataHolder;
+        var numArrayHolder = Framework.Instance()->GetUIModule()->GetRaptureAtkModule()->AtkModule.AtkArrayDataHolder;
         if (numArrayHolder.NumberArrayCount <= 21)
         {
             return;
@@ -57,17 +55,17 @@ public unsafe class AddonEnemyListHooks : IDisposable
         var enemyListArray = numArrayHolder.NumberArrays[21];
         for (var i = 0; i < thisPtr->EnemyCount; i++)
         {
-            uint enemyObjectId = (uint) enemyListArray->IntArray[8 + i * 6];
-            BattleChara* enemyChara = CharacterManager.Instance()->LookupBattleCharaByObjectId(enemyObjectId);
+            uint enemyObjectId = (uint)enemyListArray->IntArray[8 + i * 6];
+            BattleChara* enemyChara = CharacterManager.Instance()->LookupBattleCharaByEntityId(enemyObjectId);
 
             if (enemyChara is null) continue;
 
-            BattleChara* targetChara = CharacterManager.Instance()->LookupBattleCharaByObjectId((uint)enemyChara->Character.GetTargetId());
+            BattleChara* targetChara = CharacterManager.Instance()->LookupBattleCharaByEntityId((uint)enemyChara->Character.GetTargetId());
 
             bool isTargetTank = targetChara != null && TankClasses.Contains(targetChara->Character.CharacterData.ClassJob);
-            bool isTargetLocalPlayer = _plugin.ClientState.LocalPlayer?.ObjectId == enemyChara->Character.GetTargetId();
+            bool isTargetLocalPlayer = Plugin.ClientState.LocalPlayer?.EntityId == enemyChara->Character.GetTargetId();
 
-            var castinfo = enemyChara->GetCastInfo;
+            var castinfo = enemyChara->GetCastInfo();
             _enemyList.UpdateIndex(i, castinfo, isTargetTank && !isTargetLocalPlayer);
         }
     }

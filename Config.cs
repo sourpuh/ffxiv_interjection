@@ -10,15 +10,24 @@ public class Config : IPluginConfiguration
 {
     private static readonly ByteColor DefaultCastColor = new()
     {
-        R = 247, G = 154, B = 0, A = 255
+        R = 247,
+        G = 154,
+        B = 0,
+        A = 255
     };
     private static readonly ByteColor DefaultInterruptableCastColor = new()
     {
-        R = 247, G = 97, B = 107, A = 255
+        R = 247,
+        G = 97,
+        B = 107,
+        A = 255
     };
     private static readonly ByteColor DefaultTankGemColor = new()
     {
-        R = 0, G = 125, B = 255, A = 255
+        R = 0,
+        G = 125,
+        B = 255,
+        A = 255
     };
 
     public int Version { get; set; } = 0;
@@ -46,9 +55,9 @@ public class Config : IPluginConfiguration
         TankGemColor = DefaultTankGemColor;
     }
 
-    [NonSerialized] private DalamudPluginInterface? _pluginInterface;
+    [NonSerialized] private IDalamudPluginInterface _pluginInterface;
 
-    public void Initialize(DalamudPluginInterface pluginInterface)
+    public void Initialize(IDalamudPluginInterface pluginInterface)
     {
         _pluginInterface = pluginInterface;
     }

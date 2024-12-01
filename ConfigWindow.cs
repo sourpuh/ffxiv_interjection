@@ -1,19 +1,15 @@
-﻿using ImGuiNET;
-using System.Numerics;
+﻿using Dalamud.Interface.Utility.Raii;
 using Dalamud.Interface.Windowing;
-using System;
 using FFXIVClientStructs.FFXIV.Client.Graphics;
-using Dalamud.Interface.Utility.Raii;
+using ImGuiNET;
+using System.Numerics;
 
 namespace Interjection;
 
 public class ConfigWindow : Window
 {
-    private readonly Plugin _plugin;
-    public ConfigWindow(Plugin p) : base(Plugin.Name + " Configuration")
+    public ConfigWindow() : base(Plugin.Name + " Configuration")
     {
-        _plugin = p;
-
         Size = new Vector2(369, 225);
         SizeCondition = ImGuiCond.FirstUseEver;
     }
@@ -41,43 +37,43 @@ public class ConfigWindow : Window
     {
         bool needSave = false;
 
-        needSave |= ImGui.Checkbox("Enabled", ref _plugin.Config.Enabled);
+        needSave |= ImGui.Checkbox("Enabled", ref Plugin.Config.Enabled);
         ImGui.SameLine();
         if (ImGui.Button("Reset Config to Defaults"))
         {
-            _plugin.Config.SetToDefaults();
+            Plugin.Config.SetToDefaults();
             needSave = true;
         }
-        using (ImRaii.Disabled(!_plugin.Config.Enabled))
+        using (ImRaii.Disabled(!Plugin.Config.Enabled))
         {
-            using (ImRaii.Disabled(!_plugin.Config.OverrideNormalCastColor))
+            using (ImRaii.Disabled(!Plugin.Config.OverrideNormalCastColor))
             {
-                needSave |= ByteColorEdit("##ucastcolor", ref _plugin.Config.NormalCastColor, ImGuiColorEditFlags.NoInputs);
+                needSave |= ByteColorEdit("##ucastcolor", ref Plugin.Config.NormalCastColor, ImGuiColorEditFlags.NoInputs);
                 ImGui.SameLine();
             }
-            needSave |= ImGui.Checkbox("Recolor Default Castbar", ref _plugin.Config.OverrideNormalCastColor);
+            needSave |= ImGui.Checkbox("Recolor Default Castbar", ref Plugin.Config.OverrideNormalCastColor);
             Tooltip("Change the enemy list castbar color.");
 
-            using (ImRaii.Disabled(!_plugin.Config.OverrideInterruptableCastColor))
+            using (ImRaii.Disabled(!Plugin.Config.OverrideInterruptableCastColor))
             {
-                needSave |= ByteColorEdit("##icastcolor", ref _plugin.Config.InterruptableCastColor, ImGuiColorEditFlags.NoInputs);
+                needSave |= ByteColorEdit("##icastcolor", ref Plugin.Config.InterruptableCastColor, ImGuiColorEditFlags.NoInputs);
                 ImGui.SameLine();
             }
-            needSave |= ImGui.Checkbox("Recolor Interruptable Castbar", ref _plugin.Config.OverrideInterruptableCastColor);
+            needSave |= ImGui.Checkbox("Recolor Interruptable Castbar", ref Plugin.Config.OverrideInterruptableCastColor);
             Tooltip("Change the enemy list castbar color for interruptible spells.");
 
-            using (ImRaii.Disabled(!_plugin.Config.OverrideTankTargetEnmityGemColor))
+            using (ImRaii.Disabled(!Plugin.Config.OverrideTankTargetEnmityGemColor))
             {
-                needSave |= ByteColorEdit("##tankgemcolor", ref _plugin.Config.TankGemColor, ImGuiColorEditFlags.NoInputs);
+                needSave |= ByteColorEdit("##tankgemcolor", ref Plugin.Config.TankGemColor, ImGuiColorEditFlags.NoInputs);
                 ImGui.SameLine();
             }
-            needSave |= ImGui.Checkbox("Recolor Enmity Gem for Tanks", ref _plugin.Config.OverrideTankTargetEnmityGemColor);
+            needSave |= ImGui.Checkbox("Recolor Enmity Gem for Tanks", ref Plugin.Config.OverrideTankTargetEnmityGemColor);
             Tooltip("Change the enmity gem color when the enemy is targetting a tank that is not you.");
         }
 
         if (needSave)
         {
-            _plugin.Config.Save();
+            Plugin.Config.Save();
         }
     }
 }
