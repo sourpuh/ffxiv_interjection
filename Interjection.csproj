@@ -1,16 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Project Sdk="Dalamud.NET.Sdk/11.0.0">
+<Project Sdk="Dalamud.NET.Sdk/12.0.2">
   <PropertyGroup>
     <PackageId>Interjection</PackageId>
-    <Version>0.0.0.1</Version>
+    <Version>0.0.0.2</Version>
     <Authors>sourpuh</Authors>
     <Description>Better interrupt and enmity tracking.</Description>
     <PackageProjectUrl>https://github.com/sourpuh/ffxiv_interjection</PackageProjectUrl>
   </PropertyGroup>
 
-
   <PropertyGroup>
-    <TargetFramework>net8.0-windows</TargetFramework>
     <Platforms>x64</Platforms>
     <LangVersion>latest</LangVersion>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
