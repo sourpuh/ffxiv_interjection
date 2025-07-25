@@ -65,8 +65,7 @@ public unsafe class AddonEnemyListHooks : IDisposable
             bool isTargetTank = targetChara != null && TankClasses.Contains(targetChara->Character.CharacterData.ClassJob);
             bool isTargetLocalPlayer = Plugin.ClientState.LocalPlayer?.EntityId == enemyChara->Character.GetTargetId();
 
-            var castinfo = enemyChara->GetCastInfo();
-            _enemyList.UpdateIndex(i, castinfo, isTargetTank && !isTargetLocalPlayer);
+            _enemyList.UpdateIndex(i, enemyChara->IsCasting ? enemyChara->GetCastInfo() : null, isTargetTank && !isTargetLocalPlayer);
         }
     }
 }
