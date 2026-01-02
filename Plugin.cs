@@ -11,6 +11,7 @@ public class Plugin : IDalamudPlugin
     public static string Name => "Interjection";
 
     [PluginService] public static IClientState ClientState { get; private set; } = null!;
+    [PluginService] public static IObjectTable ObjectTable { get; private set; } = null!;
     [PluginService] public static ICommandManager CommandManager { get; private set; } = null!;
     [PluginService] public static IDalamudPluginInterface Interface { get; private set; } = null!;
     [PluginService] public static IDataManager DataManager { get; private set; } = null!;

@@ -61,9 +61,9 @@ public unsafe class EnemyList : IDisposable
 
     public void UpdateIndex(int i, CastInfo* castinfo, bool isTargettingTank)
     {
-        if (castinfo != null && castinfo->IsCasting > 0)
+        if (castinfo != null && castinfo->IsCasting)
         {
-            if (Plugin.Config.OverrideInterruptableCastColor && castinfo->Interruptible > 0)
+            if (Plugin.Config.OverrideInterruptableCastColor && castinfo->Interruptible)
             {
                 _enemyButtons[i].ColorCastBarInterruptable();
             }

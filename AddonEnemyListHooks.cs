@@ -1,8 +1,8 @@
 ﻿using Dalamud.Game.Addon.Lifecycle;
 using Dalamud.Game.Addon.Lifecycle.AddonArgTypes;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
-using FFXIVClientStructs.FFXIV.Client.System.Framework;
 using FFXIVClientStructs.FFXIV.Client.UI;
+using FFXIVClientStructs.FFXIV.Component.GUI;
 using System;
 using System.Linq;
 
@@ -33,8 +33,7 @@ public unsafe class AddonEnemyListHooks : IDisposable
 
     public void AddonPostDraw(AddonEvent type, AddonArgs args)
     {
-        AddonEnemyList* thisPtr = (AddonEnemyList*)args.Addon;
-
+        AddonEnemyList* thisPtr = (AddonEnemyList*)args.Addon.Address;
         if (thisPtr == null || !Plugin.Config.Enabled)
         {
             _enemyList.Dispose();
@@ -46,13 +45,7 @@ public unsafe class AddonEnemyListHooks : IDisposable
             _enemyList.Initialize(thisPtr);
         }
 
-        var numArrayHolder = Framework.Instance()->GetUIModule()->GetRaptureAtkModule()->AtkModule.AtkArrayDataHolder;
-        if (numArrayHolder.NumberArrayCount <= 21)
-        {
-            return;
-        }
-
-        var enemyListArray = numArrayHolder.NumberArrays[21];
+        var enemyListArray = AtkStage.Instance()->GetNumberArrayData(NumberArrayType.EnemyList);
         for (var i = 0; i < thisPtr->EnemyCount; i++)
         {
             uint enemyObjectId = (uint)enemyListArray->IntArray[8 + i * 6];
@@ -63,7 +56,7 @@ public unsafe class AddonEnemyListHooks : IDisposable
             BattleChara* targetChara = CharacterManager.Instance()->LookupBattleCharaByEntityId((uint)enemyChara->Character.GetTargetId());
 
             bool isTargetTank = targetChara != null && TankClasses.Contains(targetChara->Character.CharacterData.ClassJob);
-            bool isTargetLocalPlayer = Plugin.ClientState.LocalPlayer?.EntityId == enemyChara->Character.GetTargetId();
+            bool isTargetLocalPlayer = Plugin.ObjectTable.LocalPlayer?.EntityId == enemyChara->Character.GetTargetId();
 
             _enemyList.UpdateIndex(i, enemyChara->IsCasting ? enemyChara->GetCastInfo() : null, isTargetTank && !isTargetLocalPlayer);
         }

@@ -1,25 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Project Sdk="Dalamud.NET.Sdk/12.0.2">
+<Project Sdk="Dalamud.NET.Sdk/14.0.1">
   <PropertyGroup>
     <PackageId>Interjection</PackageId>
-    <Version>0.0.0.2</Version>
+    <Version>0.0.0.4</Version>
     <Authors>sourpuh</Authors>
     <Description>Better interrupt and enmity tracking.</Description>
     <PackageProjectUrl>https://github.com/sourpuh/ffxiv_interjection</PackageProjectUrl>
-  </PropertyGroup>
-
-  <PropertyGroup>
-    <Platforms>x64</Platforms>
-    <LangVersion>latest</LangVersion>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <ProduceReferenceAssembly>false</ProduceReferenceAssembly>
-    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
-    <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <Optimize>true</Optimize>
+    <PackageLicenseExpression>AGPL-3.0-or-later</PackageLicenseExpression>
   </PropertyGroup>
 
   <ItemGroup>
