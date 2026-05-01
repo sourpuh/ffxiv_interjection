@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Project Sdk="Dalamud.NET.Sdk/14.0.1">
+<Project Sdk="Dalamud.NET.Sdk/15.0.0">
   <PropertyGroup>
     <PackageId>Interjection</PackageId>
-    <Version>0.0.0.4</Version>
+    <Version>0.0.0.5</Version>
     <Authors>sourpuh</Authors>
     <Description>Better interrupt and enmity tracking.</Description>
     <PackageProjectUrl>https://github.com/sourpuh/ffxiv_interjection</PackageProjectUrl>
